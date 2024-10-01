@@ -44,7 +44,7 @@ function FormUsuario({ usuario }: Props) {
   const consultarAssistidoRef = useRef<HTMLInputElement | null>(null);
 
   //Yup validation schema
-  const usuarioSchema: yup.ObjectSchema<
+  /*const usuarioSchema: yup.ObjectSchema<
     Omit<Usuario, "roles" | "id" | "status">
   > = yup.object({
     name: yup
@@ -118,6 +118,72 @@ function FormUsuario({ usuario }: Props) {
       .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.")
       .typeError("Repita a senha"),
   });
+*/
+
+//Alterando
+
+
+const usuarioSchema: yup.ObjectSchema<Omit<Usuario, "roles" | "id" | "status">> = yup.object({
+  name: yup
+    .string()
+    .required("Obrigatório inserir o nome do assistido")
+    .transform((_, val: string) => val.toUpperCase())
+    .trim()
+    .min(3, "Nome precisa ter no mínimo 3 caracteres")
+    .max(255, "Quantidade máxima permitida de caracteres: 255")
+    .typeError("Insira o nome do assistido"),
+
+  login: yup
+    .string()
+    .trim()
+    .required("Obrigatório inserir um login")
+    .test("login_check", function (value) {
+      if (value && value.includes(" "))
+        return this.createError({
+          message: "O login não pode conter espaços",
+          path: "login",
+        });
+
+      if (/[A-Z]/.test(value)) // Verifica se contém letras maiúsculas
+        return this.createError({
+          message: "O login não pode conter letras maiúsculas",
+          path: "login",
+        });
+
+      return true;
+    })
+    .min(3, "Inserir um login com pelo menos 3 caracteres")
+    .max(15, "Login deve ter no máximo 15 caracteres")
+    .typeError("Insira um login"),
+
+  password: yup
+    .string()
+    .required("Obrigatório inserir uma senha") // Torna o campo senha obrigatório
+    .min(6, "A senha precisa ter no mínimo 6 caracteres") // Mínimo de 6 caracteres
+    .max(20, "A senha precisa ter no máximo 20 caracteres") // Máximo de 20 caracteres
+    .test("password_check", function (value) {
+      if (value && value.includes(" "))
+        return this.createError({
+          message: "A senha não pode conter espaços",
+          path: "password",
+        });
+
+      return true;
+    })
+    .typeError("Insira uma senha válida"),
+
+  repeatPassword: yup
+    .string()
+    .required("Obrigatório repetir a senha") // Torna o campo repetir senha obrigatório
+    .oneOf([yup.ref("password")], "As senhas inseridas não são iguais.") // Verifica se as senhas coincidem
+    .min(6, "A senha precisa ter no mínimo 6 caracteres") // Mínimo de 6 caracteres para repetir senha
+    .max(20, "A senha precisa ter no máximo 20 caracteres") // Máximo de 20 caracteres para repetir senha
+    .typeError("Repita a senha corretamente"),
+});
+
+
+
+
 
   // Setting the form
   const {
