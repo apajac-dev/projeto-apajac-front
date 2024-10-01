@@ -27,7 +27,7 @@
 }
 
 .table tr:nth-child(even) {
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 }
 
 .table tr:hover {
@@ -37,7 +37,7 @@
 .table th {
   padding: 10px 25px;
   text-align: left;
-  background-color: #2E5994;
+  background-color: #2e5994;
   color: white;
   text-transform: uppercase;
   font-weight: 600;
